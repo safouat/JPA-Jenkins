@@ -17,7 +17,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh './mvnw sonar:sonar \
+                    bat './mvnw sonar:sonar \
                     -Dsonar.projectKey=spring-test \
                     -Dsonar.host.url=http://localhost:9000 \
                     -Dsonar.login=sqp_f70d1c126c922be5d6465ea03e2d1440d5ae8303'
