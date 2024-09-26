@@ -28,12 +28,10 @@ pipeline {
         stage('Quality Gate') {
             steps {
                 timeout(time: 1, unit: 'HOURS') {
-                    def qualityGate = waitForQualityGate abortPipeline: true
-                        if (qualityGate.status != 'OK') {
-                            mail to: 'youremail@example.com',
-                                 subject: "Quality Gate Failed: ${qualityGate.status}",
-                                 body: "The quality gate failed for project ${qualityGate.project}. Please check SonarQube for details."
-                        }
+                    def qg = waitForQualityGate()
+                    if (qg.status != 'OK') {
+                      error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                    }
                 }
             }
         }
