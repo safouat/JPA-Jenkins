@@ -20,7 +20,7 @@ pipeline {
                     sh './mvnw sonar:sonar \
                     -Dsonar.projectKey=spring-test \
                     -Dsonar.host.url=http://localhost:9000 \
-                    -Dsonar.login=sqp_235be6134cd1bd216e123a0fb0e38f0b087c9dc2'
+                    -Dsonar.login=sqp_f70d1c126c922be5d6465ea03e2d1440d5ae8303'
                 }
             }
         }
