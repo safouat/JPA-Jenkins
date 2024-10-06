@@ -28,7 +28,25 @@ pipeline {
         stage('Quality Gate') {
             steps {
                 timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
+                    script {
+                        def qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            currentBuild.result = 'FAILURE'
+                            emailext(
+                                subject: "SonarQube Quality Gate failed for ${env.JOB_NAME}",
+                                body: """The SonarQube analysis has failed the Quality Gate.
+                                See details at ${env.BUILD_URL}""",
+                                to: 'dounyagourja2@gmail.com'
+                            )
+                        } else {
+                            emailext(
+                                subject: "SonarQube Quality Gate passed for ${env.JOB_NAME}",
+                                body: """The SonarQube analysis has passed the Quality Gate.
+                                See details at ${env.BUILD_URL}""",
+                                to: 'dounyagourja2@gmail.com'
+                            )
+                        }
+                    }
                 }
             }
         }
