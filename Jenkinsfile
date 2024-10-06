@@ -30,25 +30,39 @@ pipeline {
                 timeout(time: 5, unit: 'MINUTES') {
                     script {
                         def qg = waitForQualityGate()
+                        echo "Quality Gate status: ${qg.status}"
                         if (qg.status != 'OK') {
                             currentBuild.result = 'FAILURE'
+                            echo "Sending failure email"
                             emailext(
                                 subject: "SonarQube Quality Gate failed for ${env.JOB_NAME}",
                                 body: """The SonarQube analysis has failed the Quality Gate.
                                 See details at ${env.BUILD_URL}""",
-                                to: 'dounyagourja2@gmail.com'
+                                to: 'dounyagourja2@gmail.com',
+                                mimeType: 'text/html'
                             )
                         } else {
+                            echo "Sending success email"
                             emailext(
                                 subject: "SonarQube Quality Gate passed for ${env.JOB_NAME}",
                                 body: """The SonarQube analysis has passed the Quality Gate.
                                 See details at ${env.BUILD_URL}""",
-                                to: 'dounyagourja2@gmail.com'
+                                to: 'dounyagourja2@gmail.com',
+                                mimeType: 'text/html'
                             )
                         }
                     }
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            echo "Pipeline completed. Email should have been sent."
+        }
+        failure {
+            echo "Pipeline failed. Check Jenkins logs for more details."
         }
     }
 }
