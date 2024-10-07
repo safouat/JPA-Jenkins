@@ -67,12 +67,12 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            echo "Pipeline completed. Swaks email should have been sent."
-        }
-        failure {
-            echo "Pipeline failed. Check Jenkins logs for more details."
-        }
-    }
+//     post {
+//         always {
+//             echo "Pipeline completed. Swaks email should have been sent."
+//         }
+//         failure {
+//             echo "Pipeline failed. Check Jenkins logs for more details."
+//         }
+//     }
 }
