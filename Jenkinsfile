@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        SONAR_TOKEN = credentials('sonar-token')
-        EMAIL_PASSWORD = credentials('email-password')
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -22,7 +17,10 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    bat "mvnw sonar:sonar -Dsonar.projectKey=spring-test -Dsonar.host.url=http://localhost:9000 -Dsonar.login=%SONAR_TOKEN%"
+                    bat './mvnw sonar:sonar \
+                    -Dsonar.projectKey=spring-test \
+                    -Dsonar.host.url=http://localhost:9000 \
+                    -Dsonar.login=sqp_f70d1c126c922be5d6465ea03e2d1440d5ae8303'
                 }
             }
         }
@@ -33,36 +31,25 @@ pipeline {
                     script {
                         def qg = waitForQualityGate()
                         echo "Quality Gate status: ${qg.status}"
-
-                        def emailSubject = qg.status == 'OK' ? "SonarQube Quality Gate passed" : "SonarQube Quality Gate failed"
-                        def emailBody = """The SonarQube analysis has ${qg.status == 'OK' ? 'passed' : 'failed'} the Quality Gate for ${env.JOB_NAME}.
-
-Quality Gate Details:
-Status: ${qg.status}
-
-Conditions:
-${qg.conditions.collect { condition ->
-    "- ${condition.metricKey}: ${condition.status} (Actual: ${condition.actualValue}, Threshold: ${condition.errorThreshold})"
-}.join('\n')}
-
-See full details at: ${env.BUILD_URL}"""
-
-                        bat """
-                            swaks --to dounyagourja2@gmail.com ^
-                                  --from "chakra.hs.business@gmail.com" ^
-                                  --server "smtp.gmail.com" ^
-                                  --port "587" ^
-                                  --auth PLAIN ^
-                                  --auth-user "chakra.hs.business@gmail.com" ^
-                                  --auth-password "pnuw lgzu ofkv oyoq" ^
-                                  --helo "localhost" ^
-                                  --tls ^
-                                  --data "Subject: ${emailSubject}\\n\\n${emailBody}"
-                        """
-
                         if (qg.status != 'OK') {
                             currentBuild.result = 'FAILURE'
-                            error "Quality Gate failed"
+                            echo "Sending failure email"
+                            emailext(
+                                subject: "SonarQube Quality Gate failed for ${env.JOB_NAME}",
+                                body: """The SonarQube analysis has failed the Quality Gate.
+                                See details at ${env.BUILD_URL}""",
+                                to: 'dounyagourja2@gmail.com',
+                                mimeType: 'text/html'
+                            )
+                        } else {
+                            echo "Sending success email"
+                            emailext(
+                                subject: "SonarQube Quality Gate passed for ${env.JOB_NAME}",
+                                body: """The SonarQube analysis has passed the Quality Gate.
+                                See details at ${env.BUILD_URL}""",
+                                to: 'dounyagourja2@gmail.com',
+                                mimeType: 'text/html'
+                            )
                         }
                     }
                 }
@@ -72,7 +59,7 @@ See full details at: ${env.BUILD_URL}"""
 
     post {
         always {
-            echo "Pipeline completed. Swaks email should have been sent."
+            echo "Pipeline completed. Email should have been sent."
         }
         failure {
             echo "Pipeline failed. Check Jenkins logs for more details."
