@@ -1,7 +1,10 @@
-package ensias.cours;
+package org.jpa.jpa.controleur;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.jpa.jpa.service.CoursService;
+import org.jpa.jpa.modele.Cours;
 import org.jpa.jpa.modele.Module;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;

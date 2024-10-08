@@ -1,7 +1,6 @@
-package ensias.cours;
+package org.jpa.jpa.modele;
 
 import jakarta.persistence.*;
-import org.jpa.jpa.modele.Module;
 
 @Entity
 public class Cours {
