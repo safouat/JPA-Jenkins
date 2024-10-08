@@ -33,23 +33,33 @@ pipeline {
                         echo "Quality Gate status: ${qg.status}"
                         if (qg.status != 'OK') {
                             currentBuild.result = 'FAILURE'
-                            echo "Sending failure email"
-                            emailext(
-                                subject: "SonarQube Quality Gate failed for ${env.JOB_NAME}",
-                                body: """The SonarQube analysis has failed the Quality Gate.
-                                See details at ${env.BUILD_URL}""",
-                                to: 'dounyagourja2@gmail.com',
-                                mimeType: 'text/html'
-                            )
+                            echo "Sending failure email with swaks"
+                            bat '''
+                            swaks --to dounyagourja2@gmail.com \
+                                  --from "chakra.hs.business@gmail.com" \
+                                  --server "smtp.gmail.com" \
+                                  --port "587" \
+                                  --auth PLAIN \
+                                  --auth-user "gourjadounya8@gmail.com" \
+                                  --auth-password "laio bbzt asaz ctoj" \
+                                  --helo "localhost" \
+                                  --tls \
+                                  --data "Subject: SonarQube Quality Gate failed\n\nThe SonarQube analysis has failed the Quality Gate. Check details at ${env.BUILD_URL}."
+                            '''
                         } else {
-                            echo "Sending success email"
-                            emailext(
-                                subject: "SonarQube Quality Gate passed for ${env.JOB_NAME}",
-                                body: """The SonarQube analysis has passed the Quality Gate.
-                                See details at ${env.BUILD_URL}""",
-                                to: 'dounyagourja2@gmail.com',
-                                mimeType: 'text/html'
-                            )
+                            echo "Sending success email with swaks"
+                            bat '''
+                            swaks --to dounyagourja2@gmail.com \
+                                  --from "chakra.hs.business@gmail.com" \
+                                  --server "smtp.gmail.com" \
+                                  --port "587" \
+                                  --auth PLAIN \
+                                  --auth-user "gourjadounya8@gmail.com" \
+                                  --auth-password "laio bbzt asaz ctoj" \
+                                  --helo "localhost" \
+                                  --tls \
+                                  --data "Subject: SonarQube Quality Gate passed\n\nThe SonarQube analysis has passed the Quality Gate. Check details at ${env.BUILD_URL}."
+                            '''
                         }
                     }
                 }
@@ -59,7 +69,7 @@ pipeline {
 
     post {
         always {
-            echo "Pipeline completed. Email should have been sent."
+            echo "Pipeline completed. Email should have been sent via swaks."
         }
         failure {
             echo "Pipeline failed. Check Jenkins logs for more details."
