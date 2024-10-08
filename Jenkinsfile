@@ -36,7 +36,7 @@ pipeline {
                             echo "Sending failure email with swaks"
                             bat '''
                             swaks --to dounyagourja2@gmail.com \
-                                  --from "chakra.hs.business@gmail.com" \
+                                  --from "gourjadounya8@gmail.com" \
                                   --server "smtp.gmail.com" \
                                   --port "587" \
                                   --auth PLAIN \
@@ -50,7 +50,7 @@ pipeline {
                             echo "Sending success email with swaks"
                             bat '''
                             swaks --to dounyagourja2@gmail.com \
-                                  --from "chakra.hs.business@gmail.com" \
+                                  --from "gourjadounya8@gmail.com" \
                                   --server "smtp.gmail.com" \
                                   --port "587" \
                                   --auth PLAIN \
