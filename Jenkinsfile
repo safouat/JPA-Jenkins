@@ -8,19 +8,37 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            steps {
-                bat 'mvn clean install'
-            }
-        }
+        // stage('Build') {
+        //     steps {
+        //         sh 'mvn clean install'
+        //     }
+        // }
+
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //         withSonarQubeEnv('SonarQube') {
+        //             sh 'mvn sonar:sonar \
+        //             -Dsonar.projectKey=spring_dounya \
+        //             -Dsonar.host.url=http://localhost:9000 \
+        //             -Dsonar.login=sqa_1868c1341b4f3e169077c609a98f0637f11ee3b3'
+        //         }
+        //     }
+        // }
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    bat './mvnw sonar:sonar \
-                    -Dsonar.projectKey=spring-test \
-                    -Dsonar.host.url=http://localhost:9000 \
-                    -Dsonar.login=sqp_f70d1c126c922be5d6465ea03e2d1440d5ae8303'
+                script {
+                    def scannerHome = tool 'sonar-scanner'
+                    withSonarQubeEnv('SonarQube') {
+                        sh """
+                            ${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=spring_dounya2 \
+                            -Dsonar.host.url=https://c29f-154-144-237-193.ngrok-free.app \
+                            -Dsonar.login=sqp_4543550dddd674ee6e6d512c655b0cf51dc5c14c \
+                            -Dsonar.sources=./src \
+                            -Dsonar.exclusions=/*.java \
+                        """
+                    }
                 }
             }
         }
@@ -34,44 +52,5 @@ pipeline {
         }
 
     }
-
-        post {
-            always {
-                echo "Analyse terminée, vérifiez SonarQube pour les résultats."
-            }
-
-            failure {
-                script {
-                    emailext(
-                        subject: "Pipeline Failed: ${env.JOB_NAME} ${env.BUILD_NUMBER}",
-                        body: """<p>Bonjour,</p>
-                                 <p>Le pipeline <strong>${env.JOB_NAME}</strong> a échoué à l'étape de Quality Gate lors de l'exécution de la build numéro <strong>${env.BUILD_NUMBER}</strong>.</p>
-                                 <p>Statut de la Quality Gate: <strong>${currentBuild.result}</strong></p>
-                                 <p>Vérifiez les détails de la build ici : <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                                 <p>Cordialement,</p>
-                                 <p>Votre serveur Jenkins</p>""",
-                        to: 'dounyagourja2@gmail.com', // Remplacez par les adresses souhaitées
-                        mimeType: 'text/html'
-                    )
-                }
-            }
-
-            success {
-                script {
-                    emailext(
-                        subject: "Pipeline Succeeded: ${env.JOB_NAME} ${env.BUILD_NUMBER}",
-                        body: """<p>Bonjour,</p>
-                                 <p>Le pipeline <strong>${env.JOB_NAME}</strong> s'est terminé avec succès à l'étape de Quality Gate lors de l'exécution de la build numéro <strong>${env.BUILD_NUMBER}</strong>.</p>
-                                 <p>Statut de la Quality Gate: <strong>${currentBuild.result}</strong></p>
-                                 <p>Vérifiez les détails de la build ici : <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                                 <p>Cordialement,</p>
-                                 <p>Votre serveur Jenkins</p>""",
-                        to: 'dounyagourja2@gmail.com', // Remplacez par les adresses souhaitées
-
-                        mimeType: 'text/html'
-                    )
-                }
- }
- }
 
 }
