@@ -32,7 +32,7 @@ pipeline {
                     withSonarQubeEnv('SonarQube') {
                         sh """
                             ${scannerHome}/bin/sonar-scanner \
-                            -Dsonar.projectKey=spring_dounya2 \
+                            -Dsonar.projectKey=spring-test\
                             -Dsonar.host.url=https://localhost:9000 \
                             -Dsonar.login=sqp_c42854901308a8b594be233bafa1f87abeccb71b \
                             -Dsonar.sources=./src \
