@@ -33,8 +33,8 @@ pipeline {
                         sh """
                             ${scannerHome}/bin/sonar-scanner \
                             -Dsonar.projectKey=spring_dounya2 \
-                            -Dsonar.host.url=https://c29f-154-144-237-193.ngrok-free.app \
-                            -Dsonar.login=sqp_4543550dddd674ee6e6d512c655b0cf51dc5c14c \
+                            -Dsonar.host.url=https://localhost:9000 \
+                            -Dsonar.login=sqp_c42854901308a8b594be233bafa1f87abeccb71b \
                             -Dsonar.sources=./src \
                             -Dsonar.exclusions=/*.java \
                         """
