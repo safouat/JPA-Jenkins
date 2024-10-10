@@ -8,10 +8,11 @@ pipeline {
             }
         }
 
+        // Étape pour l'analyse SonarQube sans les fichiers .java
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    def scannerHome = tool 'sonar-scanner'  // Assurez-vous que c'est bien configuré dans Jenkins
+                    def scannerHome = tool 'sonar-scanner'
                     withSonarQubeEnv('SonarQube') {
                         bat """
                             ${scannerHome}\\bin\\sonar-scanner.bat ^
@@ -19,7 +20,7 @@ pipeline {
                             -Dsonar.host.url=http://localhost:9000 ^
                             -Dsonar.login=sqp_c42854901308a8b594be233bafa1f87abeccb71b ^
                             -Dsonar.sources=./src ^
-                            -Dsonar.exclusions=/*.java
+                            -Dsonar.exclusions=**/*.java
                         """
                     }
                 }
@@ -33,6 +34,5 @@ pipeline {
                 }
             }
         }
-
     }
 }
