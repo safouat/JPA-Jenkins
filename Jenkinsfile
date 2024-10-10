@@ -8,35 +8,18 @@ pipeline {
             }
         }
 
-        // stage('Build') {
-        //     steps {
-        //         sh 'mvn clean install'
-        //     }
-        // }
-
-        // stage('SonarQube Analysis') {
-        //     steps {
-        //         withSonarQubeEnv('SonarQube') {
-        //             sh 'mvn sonar:sonar \
-        //             -Dsonar.projectKey=spring_dounya \
-        //             -Dsonar.host.url=http://localhost:9000 \
-        //             -Dsonar.login=sqa_1868c1341b4f3e169077c609a98f0637f11ee3b3'
-        //         }
-        //     }
-        // }
-
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    def scannerHome = tool 'sonar-scanner'
+                    def scannerHome = tool 'sonar-scanner'  // Assurez-vous que c'est bien configuré dans Jenkins
                     withSonarQubeEnv('SonarQube') {
-                        sh """
-                            ${scannerHome}/bin/sonar-scanner \
-                            -Dsonar.projectKey=spring-test\
-                            -Dsonar.host.url=https://localhost:9000 \
-                            -Dsonar.login=sqp_c42854901308a8b594be233bafa1f87abeccb71b \
-                            -Dsonar.sources=./src \
-                            -Dsonar.exclusions=/*.java \
+                        bat """
+                            ${scannerHome}\\bin\\sonar-scanner.bat ^
+                            -Dsonar.projectKey=spring-test ^
+                            -Dsonar.host.url=http://localhost:9000 ^
+                            -Dsonar.login=sqp_c42854901308a8b594be233bafa1f87abeccb71b ^
+                            -Dsonar.sources=./src ^
+                            -Dsonar.exclusions=/*.java
                         """
                     }
                 }
@@ -52,5 +35,4 @@ pipeline {
         }
 
     }
-
 }
