@@ -16,9 +16,9 @@ pipeline {
                     withSonarQubeEnv('SonarQube') {
                         bat """
                             ${scannerHome}\\bin\\sonar-scanner.bat ^
-                            -Dsonar.projectKey=spring-test ^
-                            -Dsonar.host.url=http://localhost:9000 ^
-                            -Dsonar.login=sqp_c42854901308a8b594be233bafa1f87abeccb71b ^
+                            -Dsonar.projectKey=team7_project ^
+                            -Dsonar.host.url=https://cdae-105-73-96-62.ngrok-free.app ^
+                            -Dsonar.login=sqa_c71fea0a0f2dc3a496870d130125c68309512de4 ^
                             -Dsonar.sources=./src ^
                             -Dsonar.java.binaries=./target/classes
                         """
